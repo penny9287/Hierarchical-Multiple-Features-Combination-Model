@@ -1,0 +1,53 @@
+model_dir: baseline
+
+data:
+  train_features_file: corpora/train.uy
+  train_labels_file: corpora/train.ch
+
+  eval_features_file: corpora/val.uy
+  eval_labels_file: corpora/val.ch
+
+  source_words_vocabulary: corpora/uy.vocab
+  target_words_vocabulary: corpora/ch.vocab
+
+params:
+  optimizer: AdamOptimizer
+  optimizer_params:
+    beta1: 0.9
+    beta2: 0.999
+  learning_rate: 0.001
+  param_init: 0.1
+  clip_gradients: 5.0
+  
+  regularization:
+    type: l2 
+    scale: 1e-4
+
+  decay_type: exponential_decay
+  decay_params:
+    decay_rate: 0.7
+    decay_steps: 10000
+  start_decay_steps: 400000
+  beam_width: 5
+
+train:
+  batch_size: 256
+  batch_type: tokens
+  bucket_width: 5
+  save_checkpoints_secs: 1200
+  keep_checkpoint_max: 5
+  train_steps: 1000000
+  maximum_features_length: 50
+  maximum_labels_length: 50
+  average_last_checkpoints: 5
+
+eval:
+  batch_size: 32
+  eval_delay: 1200
+  external_evaluators: BLEU
+
+infer:
+  bucket_width: 5
+
+score:
+  batch_size: 32
